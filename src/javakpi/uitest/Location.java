@@ -31,12 +31,10 @@ class Location extends SSBase {
     private ArrayList<String> _latitude_new = null;
     
     ArrayList<String> latitude() {
-        if (_latitude_new != null) {
+        if (_latitude_new != null)
             return _latitude_new;
-        }
-        // search in triples
-        _latitude_new = getInTriples(LATITUDE_URI);
-        return _latitude_new;
+ 
+        return getInTriples(LATITUDE_URI);
     }
 
     void latitude(String value) {
@@ -82,7 +80,8 @@ class Location extends SSBase {
     }
 
     void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // TODO: сделать загрузку изменений
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

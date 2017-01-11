@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -36,13 +37,13 @@ public class JavakpiUitest extends Panel implements ActionListener {
 
     // SmartSpaces
     KPICore kp = null;
-    
+
     // панель параметров соединения
     JTextField tfIP, tfPort, tfSSN;
     JPanel jpConnection;
     JLabel lConnectionStatus;
     JButton bConnect;
-    
+
     // панель профиля пользователя
     JTextField tfUserID, tfUserName, tfUserSurname, tfUserGeoLat, tfUserGeoLon;
     JTextArea tfUserPreferences;
@@ -54,11 +55,11 @@ public class JavakpiUitest extends Panel implements ActionListener {
      * генерация UI
      */
     public JavakpiUitest() {
-        
+
         JPanel jpMain = new JPanel(false);
         jpMain.setLayout(new BoxLayout(jpMain, BoxLayout.Y_AXIS));
         JPanel line1, line2, line3, line4, line5, line6;
-        
+
         //=============================================
         // панель соединения с сервером
         tfIP = new JTextField();
@@ -87,7 +88,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
         line1.add(lConnectionStatus);
         jpConnection.add(line1);
         jpMain.add(jpConnection);
-        
+
         //=============================================
         // панель пользователя
         tfUserID = new JTextField();
@@ -103,7 +104,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
         tfUserPreferences = new JTextArea();
         tfUserPreferences.setColumns(20);
         tfUserPreferences.setRows(10);
-        
+
         bUserGenerate = new JButton("Generate ID");
         bUserGenerate.addActionListener(this);
         bUserGet = new JButton("Load from SIB");
@@ -112,7 +113,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
         bUserUpdate.addActionListener(this);
         bUserRemove = new JButton("Delete");
         bUserRemove.addActionListener(this);
-        
+
         jpUser = new JPanel();
         jpUser.setBorder(BorderFactory.createLineBorder(Color.green));
         jpUser.setLayout(new BoxLayout(jpUser, BoxLayout.Y_AXIS));
@@ -126,7 +127,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
         line5.add(tfUserID);
         line5.add(bUserGenerate);
         jpUser.add(line5);
-        
+
         line2 = new JPanel();
         line2.add(new JLabel("Name:"));
         line2.add(tfUserName);
@@ -140,11 +141,11 @@ public class JavakpiUitest extends Panel implements ActionListener {
         line3.add(new JLabel("Longitude:"));
         line3.add(tfUserGeoLon);
         jpUser.add(line3);
-        
+
         line4 = new JPanel();
         line4.add(tfUserPreferences);
         jpUser.add(line4);
-        
+
         line6 = new JPanel();
         line6.add(bUserGet);
         line6.add(bUserUpdate);
@@ -152,7 +153,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
         jpUser.add(line6);
 
         jpMain.add(jpUser);
-        
+
         /////////////////////////////////////////////////////
         // отображение панели
         this.add(jpMain, BorderLayout.SOUTH);
@@ -206,7 +207,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
                 }
                 this.kp.enable_debug_message();
                 this.kp.enable_error_message();
-                
+
                 SIBResponse ret;
                 ret = kp.join();
                 if (!ret.isConfirmed()) {
@@ -215,7 +216,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
                     this.kp = null;
                     return;
                 }
-                
+
                 bConnect.setText("Disconnect");
                 lConnectionStatus.setText("(Connected: " + this.kp.toString() + ")");
             } else {
@@ -229,7 +230,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
                 if (!ret.isConfirmed()) {
                     JOptionPane.showMessageDialog(null, "Error leaving the SIB");
                 }
-                
+
                 this.kp = null;
                 bConnect.setText("Connect");
                 lConnectionStatus.setText("(Disconnected)");
@@ -246,18 +247,39 @@ public class JavakpiUitest extends Panel implements ActionListener {
             }
             user = new User(this.kp, tfUserID.getText());
             user.load();
-            tfUserName.setText(user.name().toString());
-            tfUserSurname.setText(user.surname().toString());
-            ArrayList<Location> loclist = user.hasLocation();
-            Location loc;
-            if (loclist.isEmpty()) {
-                loc = new Location(this.kp);
-            } else {
-                loc = loclist.get(0);
+
+            ArrayList<String> tt = user.name();
+            if (!tt.isEmpty()) {
+                tfUserName.setText(tt.get(0));
             }
-            tfUserGeoLat.setText(loc.latitude().toString());
-            tfUserGeoLon.setText(loc.longitude().toString());
-            tfUserPreferences.setText(user.preferences().toString());
+
+            tt = user.surname();
+            if (!tt.isEmpty()) {
+                tfUserSurname.setText(tt.get(0));
+            }
+
+            ArrayList<Location> loclist = user.hasLocation();
+            if (!loclist.isEmpty()) {
+                Location loc;
+                loc = loclist.get(0);
+
+                tt = loc.latitude();
+                if (!tt.isEmpty()) {
+                    tfUserGeoLat.setText(tt.get(0));
+                }
+
+                tt = loc.longitude();
+                if (!tt.isEmpty()) {
+                    tfUserGeoLon.setText(tt.get(0));
+                }
+            }
+            
+            tt = user.preferences();
+            StringBuilder sb = new StringBuilder();
+            for (String s: tt) {
+                sb.append(s + "\n");
+            }
+            tfUserPreferences.setText(sb.toString());
         } // c == bUserGet
         else if (c == bUserUpdate) {
             if (this.kp == null) {
@@ -267,23 +289,32 @@ public class JavakpiUitest extends Panel implements ActionListener {
             if (user == null || !user.getID().equals(tfUserID.getText())) {
                 user = new User(this.kp, tfUserID.getText());
             }
-            user.name(tfUserName.getText());
-            user.surname(tfUserSurname.getText());
-            user.preferences(tfUserPreferences.getText());
-            ArrayList<Location> loclist = user.hasLocation();
-            Location loc;
-            if (loclist.isEmpty()) {
-                loc = new Location(this.kp);
-                user.hasLocation(loc);
-            } else {
-                loc = loclist.get(0);
+            if (!tfUserName.getText().isEmpty())
+                user.name(tfUserName.getText());
+            if (!tfUserSurname.getText().isEmpty())
+                user.surname(tfUserSurname.getText());
+            
+            String[] prefs = tfUserPreferences.getText().split("\n");
+            if (prefs.length > 0) {
+                user.preferences(new ArrayList<String>(Arrays.asList(prefs)));
             }
-            loc.latitude(tfUserGeoLat.getText());
-            loc.longitude(tfUserGeoLon.getText());
+            if (!tfUserGeoLat.getText().isEmpty() && !tfUserGeoLon.getText().isEmpty()) {
+                ArrayList<Location> loclist = user.hasLocation();
+                Location loc;
+                if (loclist.isEmpty()) {
+                    loc = new Location(this.kp);
+                    user.hasLocation(loc);
+                } else {
+                    loc = loclist.get(0);
+                }
+                if (!tfUserGeoLat.getText().isEmpty())
+                    loc.latitude(tfUserGeoLat.getText());
+                if (!tfUserGeoLon.getText().isEmpty())
+                    loc.longitude(tfUserGeoLon.getText());
+                loc.update();
+            }
             user.update();
-            loc.update();
-        }
-        else {
+        } else {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }

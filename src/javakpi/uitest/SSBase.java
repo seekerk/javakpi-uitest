@@ -29,6 +29,7 @@ abstract class SSBase {
     // разные гадости
     //TODO: заменить на rdg4j
     public static final String RDF_TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+    public static final String SIB_ANY = "http://www.nokia.com/NRC/M3/sib#any";
     
     SSBase(KPICore kp, String objectID) {
         _kp = kp;
@@ -47,7 +48,7 @@ abstract class SSBase {
     
     public void load() {
         SIBResponse resp;
-        resp = _kp.queryRDF(_id, "*", "*", "uri", "uri");
+        resp = _kp.queryRDF(_id, SIB_ANY, SIB_ANY, "uri", "uri");
         if (!resp.isConfirmed()) {
             //TODO: change to exception
             System.err.println("Failed connection");
@@ -106,7 +107,7 @@ abstract class SSBase {
      * @param subjectType тип субъекта ("uri" or "literal")
      * @return триплет в виде массива
      */
-    private static ArrayList<String> createTriple(String object, String predicate, String subject, String objectType, String subjectType) {
+    public static ArrayList<String> createTriple(String object, String predicate, String subject, String objectType, String subjectType) {
             ArrayList<String> ret = new ArrayList(5);
             ret.add(object);
             ret.add(predicate);
@@ -128,5 +129,14 @@ abstract class SSBase {
             vals.add(value);
         }
         return _kp.insert(vals);
+    }
+    
+    protected SIBResponse _remove(ArrayList<ArrayList<String>> list) {
+        Vector<Vector<String>> vals = new Vector();
+        for (ArrayList<String> triple : list) {
+            Vector<String> value = new Vector(triple);
+            vals.add(value);
+        }
+        return _kp.remove(vals);
     }
 }
