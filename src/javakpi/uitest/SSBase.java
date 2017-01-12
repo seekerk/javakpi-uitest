@@ -6,9 +6,7 @@
 package javakpi.uitest;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
-import java.util.Vector;
 import sofia_kp.KPICore;
 import sofia_kp.SIBResponse;
 
@@ -24,7 +22,7 @@ abstract class SSBase {
     private static Random rand = null;
 
     // загруженные триплеты
-    private Vector<Vector<String>> triples = null;
+    private ArrayList<ArrayList<String>> triples = null;
     
     // разные гадости
     //TODO: заменить на rdg4j
@@ -56,7 +54,7 @@ abstract class SSBase {
         }
         this.triples = resp.query_results;
         //TODO: DEBUG
-        for (Vector<String> t : this.triples) {
+        for (ArrayList<String> t : this.triples) {
             System.out.println(t);
         }
     }
@@ -66,7 +64,7 @@ abstract class SSBase {
         if (this.triples == null) {
             load();
         }
-        for (Vector<String> t : this.triples) {
+        for (ArrayList<String> t : this.triples) {
             if (t.contains(searchURI)) {
                 ret.add(t.get(2));
             }
@@ -118,25 +116,15 @@ abstract class SSBase {
     }
     
     /**
-     * преобразование ArrayList в Vector и добавление в СИБ
+     * преобразование ArrayList в ArrayList и добавление в СИБ
      * @param list
      * @return 
      */
     protected SIBResponse _insert(ArrayList<ArrayList<String>> list) {
-        Vector<Vector<String>> vals = new Vector();
-        for (ArrayList<String> triple : list) {
-            Vector<String> value = new Vector(triple);
-            vals.add(value);
-        }
-        return _kp.insert(vals);
+        return _kp.insert(list);
     }
     
     protected SIBResponse _remove(ArrayList<ArrayList<String>> list) {
-        Vector<Vector<String>> vals = new Vector();
-        for (ArrayList<String> triple : list) {
-            Vector<String> value = new Vector(triple);
-            vals.add(value);
-        }
-        return _kp.remove(vals);
+        return _kp.remove(list);
     }
 }
