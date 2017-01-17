@@ -16,7 +16,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import sofia_kp.KPICore;
 import sofia_kp.SIBResponse;
+import org.fruct.oss.*;
 
 /**
  *
@@ -238,7 +238,7 @@ public class JavakpiUitest extends Panel implements ActionListener {
 
         } // c == bConnect
         else if (c == bUserGenerate) {
-            tfUserID.setText(SSBase.generateID("user"));
+            tfUserID.setText(BaseRDF.generateID("user"));
         } // c == bUserGenerate
         else if (c == bUserGet) {
             if (this.kp == null) {
@@ -263,12 +263,12 @@ public class JavakpiUitest extends Panel implements ActionListener {
                 Location loc;
                 loc = loclist.get(0);
 
-                tt = loc.latitude();
+                tt = loc.lat();
                 if (!tt.isEmpty()) {
                     tfUserGeoLat.setText(tt.get(0));
                 }
 
-                tt = loc.longitude();
+                tt = loc.lon();
                 if (!tt.isEmpty()) {
                     tfUserGeoLon.setText(tt.get(0));
                 }
@@ -308,9 +308,9 @@ public class JavakpiUitest extends Panel implements ActionListener {
                     loc = loclist.get(0);
                 }
                 if (!tfUserGeoLat.getText().isEmpty())
-                    loc.latitude(tfUserGeoLat.getText());
+                    loc.lat(tfUserGeoLat.getText());
                 if (!tfUserGeoLon.getText().isEmpty())
-                    loc.longitude(tfUserGeoLon.getText());
+                    loc.lon(tfUserGeoLon.getText());
                 loc.update();
             }
             user.update();

@@ -1,6 +1,7 @@
 package org.fruct.oss;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import sofia_kp.KPICore;
 import sofia_kp.SIBResponse;
 
@@ -187,6 +188,111 @@ public class User extends BaseRDF {
             // Добавляем триплет для класса индивида
             newTriples.add(createTriple(getID(), RDF_TYPE_URI, getURI()));
         }
+
+                if (_name_new != null) {
+                    // получаем старые значения
+                    ArrayList<String> oldVals = getInTriples(name_URI);
+                    Iterator<String> itrNew = _name_new.iterator();
+                    while (itrNew.hasNext()) {
+                        String curNew = itrNew.next();
+                        // ищем старое значение
+                        Iterator<String> itrOld = oldVals.iterator();
+                        while(itrOld.hasNext()) {
+                            String curOld = itrOld.next();
+                            if (curNew.equals(curOld)) {
+                                itrNew.remove();
+                                itrOld.remove();
+                                break;
+                            }
+                        }
+                    }
+                    _name_new.stream().forEach((String val) -> {
+                        newTriples.add(createTriple(getID(), name_URI, val, "uri", "literal"));
+                    });
+                    oldVals.stream().forEach((val) -> {
+                        removeTriples.add(createTriple(getID(), name_URI, val, "uri", "literal"));
+                    });
+        	    _name_new = null;
+                }
+        //-----------------------
+                if (_hasLocation_new != null) {
+                    // получаем старые значения
+                    ArrayList<String> oldValsIDs = getInTriples(hasLocation_URI);
+                    Iterator<Location> itrNew = _hasLocation_new.iterator();
+                    while (itrNew.hasNext()) {
+                        Location curNew = itrNew.next();
+                        // ищем старое значение
+                        Iterator<String> itrOldID = oldValsIDs.iterator();
+                        while(itrOldID.hasNext()) {
+                            String curOldID = itrOldID.next();
+                            if (curNew.getID().equals(curOldID)) {
+                                itrNew.remove();
+                                itrOldID.remove();
+                                break;
+                            }
+                        }
+                    }
+                    _hasLocation_new.stream().forEach((Location val) -> {
+                        newTriples.add(createTriple(getID(), hasLocation_URI, val.getID(), "uri", "literal"));
+                    });
+                    oldValsIDs.stream().forEach((val) -> {
+                        removeTriples.add(createTriple(getID(), hasLocation_URI, val, "uri", "literal"));
+                    });
+        	    _hasLocation_new = null;
+                }
+        //--------------------
+                if (_surname_new != null) {
+                    // получаем старые значения
+                    ArrayList<String> oldVals = getInTriples(surname_URI);
+                    Iterator<String> itrNew = _surname_new.iterator();
+                    while (itrNew.hasNext()) {
+                        String curNew = itrNew.next();
+                        // ищем старое значение
+                        Iterator<String> itrOld = oldVals.iterator();
+                        while(itrOld.hasNext()) {
+                            String curOld = itrOld.next();
+                            if (curNew.equals(curOld)) {
+                                itrNew.remove();
+                                itrOld.remove();
+                                break;
+                            }
+                        }
+                    }
+                    _surname_new.stream().forEach((String val) -> {
+                        newTriples.add(createTriple(getID(), surname_URI, val, "uri", "literal"));
+                    });
+                    oldVals.stream().forEach((val) -> {
+                        removeTriples.add(createTriple(getID(), surname_URI, val, "uri", "literal"));
+                    });
+        	    _surname_new = null;
+                }
+        //-----------------------
+                if (_preferences_new != null) {
+                    // получаем старые значения
+                    ArrayList<String> oldVals = getInTriples(preferences_URI);
+                    Iterator<String> itrNew = _preferences_new.iterator();
+                    while (itrNew.hasNext()) {
+                        String curNew = itrNew.next();
+                        // ищем старое значение
+                        Iterator<String> itrOld = oldVals.iterator();
+                        while(itrOld.hasNext()) {
+                            String curOld = itrOld.next();
+                            if (curNew.equals(curOld)) {
+                                itrNew.remove();
+                                itrOld.remove();
+                                break;
+                            }
+                        }
+                    }
+                    _preferences_new.stream().forEach((String val) -> {
+                        newTriples.add(createTriple(getID(), preferences_URI, val, "uri", "literal"));
+                    });
+                    oldVals.stream().forEach((val) -> {
+                        removeTriples.add(createTriple(getID(), preferences_URI, val, "uri", "literal"));
+                    });
+        	    _preferences_new = null;
+                }
+        //-----------------------
 
 
         SIBResponse ret;

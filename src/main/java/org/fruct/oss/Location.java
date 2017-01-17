@@ -1,6 +1,7 @@
 package org.fruct.oss;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import sofia_kp.KPICore;
 import sofia_kp.SIBResponse;
 
@@ -18,9 +19,9 @@ public class Location extends BaseRDF {
 
     //------------ lat --------------
         private static final String lat_URI = "http://oss.fruct.org/etourism#lat";
-        private ArrayList<String> _lat_new = null;
+        private ArrayList<Double> _lat_new = null;
 
-        public ArrayList<String> lat() {
+        public ArrayList<Double> lat() {
             if (_lat_new != null) {
                 return _lat_new;
             }
@@ -28,15 +29,15 @@ public class Location extends BaseRDF {
             return getInTriples(lat_URI);
         }
 
-        public void lat(String value) {
+        public void lat(Double value) {
             lat(value, true);
         }
 
-        public void lat(ArrayList<String> value) {
+        public void lat(ArrayList<Double> value) {
             lat(value, true);
         }
 
-        public void lat(String value, boolean removeOldValues) {
+        public void lat(Double value, boolean removeOldValues) {
              if (_lat_new == null) {
                 _lat_new = lat();
             }
@@ -46,7 +47,7 @@ public class Location extends BaseRDF {
             _lat_new.add(value);
         }
 
-        public void lat(ArrayList<String> value, boolean removeOldValues) {
+        public void lat(ArrayList<Double> value, boolean removeOldValues) {
             if (_lat_new == null) {
                 _lat_new = lat();
             }
@@ -58,9 +59,9 @@ public class Location extends BaseRDF {
     //============== lat =============
     //------------ lon --------------
         private static final String lon_URI = "http://oss.fruct.org/etourism#lon";
-        private ArrayList<String> _lon_new = null;
+        private ArrayList<Double> _lon_new = null;
 
-        public ArrayList<String> lon() {
+        public ArrayList<Double> lon() {
             if (_lon_new != null) {
                 return _lon_new;
             }
@@ -68,15 +69,15 @@ public class Location extends BaseRDF {
             return getInTriples(lon_URI);
         }
 
-        public void lon(String value) {
+        public void lon(Double value) {
             lon(value, true);
         }
 
-        public void lon(ArrayList<String> value) {
+        public void lon(ArrayList<Double> value) {
             lon(value, true);
         }
 
-        public void lon(String value, boolean removeOldValues) {
+        public void lon(Double value, boolean removeOldValues) {
              if (_lon_new == null) {
                 _lon_new = lon();
             }
@@ -86,7 +87,7 @@ public class Location extends BaseRDF {
             _lon_new.add(value);
         }
 
-        public void lon(ArrayList<String> value, boolean removeOldValues) {
+        public void lon(ArrayList<Double> value, boolean removeOldValues) {
             if (_lon_new == null) {
                 _lon_new = lon();
             }
@@ -113,6 +114,59 @@ public class Location extends BaseRDF {
             // Добавляем триплет для класса индивида
             newTriples.add(createTriple(getID(), RDF_TYPE_URI, getURI()));
         }
+
+                if (_lat_new != null) {
+                    // получаем старые значения
+                    ArrayList<Double> oldVals = getInTriples(lat_URI);
+                    Iterator<Double> itrNew = _lat_new.iterator();
+                    while (itrNew.hasNext()) {
+                        Double curNew = itrNew.next();
+                        // ищем старое значение
+                        Iterator<Double> itrOld = oldVals.iterator();
+                        while(itrOld.hasNext()) {
+                            String curOld = itrOld.next();
+                            if (curNew.equals(curOld)) {
+                                itrNew.remove();
+                                itrOld.remove();
+                                break;
+                            }
+                        }
+                    }
+                    _lat_new.stream().forEach((String val) -> {
+                        newTriples.add(createTriple(getID(), lat_URI, val, "uri", "literal"));
+                    });
+                    oldVals.stream().forEach((val) -> {
+                        removeTriples.add(createTriple(getID(), lat_URI, val, "uri", "literal"));
+                    });
+        	    _lat_new = null;
+                }
+        //-----------------------
+                if (_lon_new != null) {
+                    // получаем старые значения
+                    ArrayList<Double> oldVals = getInTriples(lon_URI);
+                    Iterator<Double> itrNew = _lon_new.iterator();
+                    while (itrNew.hasNext()) {
+                        Double curNew = itrNew.next();
+                        // ищем старое значение
+                        Iterator<Double> itrOld = oldVals.iterator();
+                        while(itrOld.hasNext()) {
+                            String curOld = itrOld.next();
+                            if (curNew.equals(curOld)) {
+                                itrNew.remove();
+                                itrOld.remove();
+                                break;
+                            }
+                        }
+                    }
+                    _lon_new.stream().forEach((String val) -> {
+                        newTriples.add(createTriple(getID(), lon_URI, val, "uri", "literal"));
+                    });
+                    oldVals.stream().forEach((val) -> {
+                        removeTriples.add(createTriple(getID(), lon_URI, val, "uri", "literal"));
+                    });
+        	    _lon_new = null;
+                }
+        //-----------------------
 
 
         SIBResponse ret;
