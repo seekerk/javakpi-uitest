@@ -26,7 +26,7 @@ public class User extends BaseRDF {
                 return _name_new;
             }
             // search in triple store
-            return getInTriples(name_URI);
+            return getStringInTriples(name_URI);
         }
 
         public void name(String value) {
@@ -68,7 +68,7 @@ public class User extends BaseRDF {
 
             ArrayList<Location> ret = new ArrayList();
             //search IDs in triples
-            ArrayList<String> hasLocationIDs = getInTriples(hasLocation_URI);
+            ArrayList<String> hasLocationIDs = getStringInTriples(hasLocation_URI);
             for (String locID: hasLocationIDs) {
                 Location value = new Location(_kp, locID);
                 ret.add(value);
@@ -100,7 +100,7 @@ public class User extends BaseRDF {
                 return _surname_new;
             }
             // search in triple store
-            return getInTriples(surname_URI);
+            return getStringInTriples(surname_URI);
         }
 
         public void surname(String value) {
@@ -140,7 +140,7 @@ public class User extends BaseRDF {
                 return _preferences_new;
             }
             // search in triple store
-            return getInTriples(preferences_URI);
+            return getStringInTriples(preferences_URI);
         }
 
         public void preferences(String value) {
@@ -184,14 +184,14 @@ public class User extends BaseRDF {
         ArrayList<ArrayList<String>> removeTriples = new ArrayList();
 
         // 1. проверяем, новый ли индивид. Если новый, то у него нет триплетов с сиба
-        if (getInTriples(RDF_TYPE_URI).isEmpty()) {
+        if (getStringInTriples(RDF_TYPE_URI).isEmpty()) {
             // Добавляем триплет для класса индивида
             newTriples.add(createTriple(getID(), RDF_TYPE_URI, getURI()));
         }
 
                 if (_name_new != null) {
                     // получаем старые значения
-                    ArrayList<String> oldVals = getInTriples(name_URI);
+                    ArrayList<String> oldVals = getStringInTriples(name_URI);
                     Iterator<String> itrNew = _name_new.iterator();
                     while (itrNew.hasNext()) {
                         String curNew = itrNew.next();
@@ -207,17 +207,17 @@ public class User extends BaseRDF {
                         }
                     }
                     _name_new.stream().forEach((String val) -> {
-                        newTriples.add(createTriple(getID(), name_URI, val, "uri", "literal"));
+                        newTriples.add(createTriple(getID(), name_URI, val.toString(), "uri", "literal"));
                     });
                     oldVals.stream().forEach((val) -> {
-                        removeTriples.add(createTriple(getID(), name_URI, val, "uri", "literal"));
+                        removeTriples.add(createTriple(getID(), name_URI, val.toString(), "uri", "literal"));
                     });
         	    _name_new = null;
                 }
         //-----------------------
                 if (_hasLocation_new != null) {
                     // получаем старые значения
-                    ArrayList<String> oldValsIDs = getInTriples(hasLocation_URI);
+                    ArrayList<String> oldValsIDs = getStringInTriples(hasLocation_URI);
                     Iterator<Location> itrNew = _hasLocation_new.iterator();
                     while (itrNew.hasNext()) {
                         Location curNew = itrNew.next();
@@ -243,7 +243,7 @@ public class User extends BaseRDF {
         //--------------------
                 if (_surname_new != null) {
                     // получаем старые значения
-                    ArrayList<String> oldVals = getInTriples(surname_URI);
+                    ArrayList<String> oldVals = getStringInTriples(surname_URI);
                     Iterator<String> itrNew = _surname_new.iterator();
                     while (itrNew.hasNext()) {
                         String curNew = itrNew.next();
@@ -259,17 +259,17 @@ public class User extends BaseRDF {
                         }
                     }
                     _surname_new.stream().forEach((String val) -> {
-                        newTriples.add(createTriple(getID(), surname_URI, val, "uri", "literal"));
+                        newTriples.add(createTriple(getID(), surname_URI, val.toString(), "uri", "literal"));
                     });
                     oldVals.stream().forEach((val) -> {
-                        removeTriples.add(createTriple(getID(), surname_URI, val, "uri", "literal"));
+                        removeTriples.add(createTriple(getID(), surname_URI, val.toString(), "uri", "literal"));
                     });
         	    _surname_new = null;
                 }
         //-----------------------
                 if (_preferences_new != null) {
                     // получаем старые значения
-                    ArrayList<String> oldVals = getInTriples(preferences_URI);
+                    ArrayList<String> oldVals = getStringInTriples(preferences_URI);
                     Iterator<String> itrNew = _preferences_new.iterator();
                     while (itrNew.hasNext()) {
                         String curNew = itrNew.next();
@@ -285,10 +285,10 @@ public class User extends BaseRDF {
                         }
                     }
                     _preferences_new.stream().forEach((String val) -> {
-                        newTriples.add(createTriple(getID(), preferences_URI, val, "uri", "literal"));
+                        newTriples.add(createTriple(getID(), preferences_URI, val.toString(), "uri", "literal"));
                     });
                     oldVals.stream().forEach((val) -> {
-                        removeTriples.add(createTriple(getID(), preferences_URI, val, "uri", "literal"));
+                        removeTriples.add(createTriple(getID(), preferences_URI, val.toString(), "uri", "literal"));
                     });
         	    _preferences_new = null;
                 }

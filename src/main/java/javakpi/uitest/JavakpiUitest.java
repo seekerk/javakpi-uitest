@@ -262,15 +262,15 @@ public class JavakpiUitest extends Panel implements ActionListener {
             if (!loclist.isEmpty()) {
                 Location loc;
                 loc = loclist.get(0);
-
-                tt = loc.lat();
-                if (!tt.isEmpty()) {
-                    tfUserGeoLat.setText(tt.get(0));
+                ArrayList<Double> ttDouble;
+                ttDouble = loc.lat();
+                if (!ttDouble.isEmpty()) {
+                    tfUserGeoLat.setText(ttDouble.get(0).toString());
                 }
 
-                tt = loc.lon();
-                if (!tt.isEmpty()) {
-                    tfUserGeoLon.setText(tt.get(0));
+                ttDouble = loc.lon();
+                if (!ttDouble.isEmpty()) {
+                    tfUserGeoLon.setText(ttDouble.get(0).toString());
                 }
             }
             
@@ -308,9 +308,9 @@ public class JavakpiUitest extends Panel implements ActionListener {
                     loc = loclist.get(0);
                 }
                 if (!tfUserGeoLat.getText().isEmpty())
-                    loc.lat(tfUserGeoLat.getText());
+                    loc.lat(Double.parseDouble(tfUserGeoLat.getText()));
                 if (!tfUserGeoLon.getText().isEmpty())
-                    loc.lon(tfUserGeoLon.getText());
+                    loc.lon(Double.parseDouble(tfUserGeoLon.getText()));
                 loc.update();
             }
             user.update();
